@@ -1,56 +1,214 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Admin - Blogs</title>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-</head>
+@extends('admin.layouts.app')
 
-<body>
+@section('title', 'Blog Management')
 
-    <div class="container">
+@section('content')
 
-        <h1>Admin - Manage Blogs</h1>
+    <!-- Header -->
 
-        <a href="{{ route('blogs.create') }}">
+    <div class="admin-header">
+
+        <div>
+
+            <h1>Blog Management</h1>
+
+            <p>
+                Manage your blogs, content and publications.
+            </p>
+
+        </div>
+
+        <a
+            href="{{ route('blogs.create') }}"
+            class="btn btn-primary"
+        >
             + Add New Blog
         </a>
 
-        <br><br>
+    </div>
 
-        @foreach($blogs as $blog)
 
-            <article class="blog-card">
+    <!-- Success Message -->
 
-                <h2>{{ $blog->title }}</h2>
+    @if(session('success'))
 
-                <p>{{ $blog->short_description }}</p>
+        <div class="alert-success">
+            {{ session('success') }}
+        </div>
 
-                <p>
-                    Author: {{ $blog->author }}
-                </p>
+    @endif
 
-                <a href="{{ route('blogs.edit', $blog->id) }}">
-                    Edit
-                </a>
 
-                <form
-                    action="{{ route('blogs.destroy', $blog->id) }}"
-                    method="POST"
-                    style="display:inline;"
-                >
-                    @csrf
-                    @method('DELETE')
+    <!-- Blog Table -->
 
-                    <button type="submit">
-                        Delete
-                    </button>
-                </form>
+    <div class="blog-table-wrapper">
 
-            </article>
+        <table class="blog-table">
 
-        @endforeach
+            <thead>
+
+                <tr>
+
+                    <th>Image</th>
+                    <th>Blog</th>
+                    <th>Author</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                @forelse($blogs as $blog)
+
+                    <tr>
+
+                        <!-- Image -->
+
+                        <td>
+
+                            @if($blog->image)
+
+                                <img
+                                    src="{{ asset('storage/' . $blog->image) }}"
+                                    alt="{{ $blog->title }}"
+                                    class="admin-blog-image"
+                                >
+
+                            @else
+
+                                <div class="no-image">
+                                    No Image
+                                </div>
+
+                            @endif
+
+                        </td>
+
+
+                        <!-- Blog -->
+
+                        <td>
+
+                            <div class="blog-title">
+                                {{ $blog->title }}
+                            </div>
+
+                            <div class="blog-description">
+                                {{ Str::limit($blog->short_description, 70) }}
+                            </div>
+
+                        </td>
+
+
+                        <!-- Author -->
+
+                        <td>
+                            {{ $blog->author }}
+                        </td>
+
+
+                        <!-- Status -->
+
+                        <td>
+
+                            @if($blog->status === 'published')
+
+                                <span class="status status-published">
+                                    Published
+                                </span>
+
+                            @else
+
+                                <span class="status status-draft">
+                                    Draft
+                                </span>
+
+                            @endif
+
+                        </td>
+
+
+                        <!-- Date -->
+
+                        <td>
+                            {{ $blog->created_at->format('d M Y') }}
+                        </td>
+
+
+                        <!-- Actions -->
+
+                        <td>
+
+                            <div class="action-buttons">
+
+                                <a
+                                    href="{{ route('blogs.edit', $blog->id) }}"
+                                    class="btn btn-edit"
+                                >
+                                    Edit
+                                </a>
+
+
+                                <form
+                                    action="{{ route('blogs.destroy', $blog->id) }}"
+                                    method="POST"
+                                >
+
+                                    @csrf
+
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-delete"
+                                        onclick="return confirm('Are you sure you want to delete this blog?')"
+                                    >
+                                        Delete
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                @empty
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            style="text-align:center; padding:40px;"
+                        >
+
+                            No blogs found.
+
+                            <br><br>
+
+                            <a
+                                href="{{ route('blogs.create') }}"
+                                class="btn btn-primary"
+                            >
+                                + Create Your First Blog
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                @endforelse
+
+            </tbody>
+
+        </table>
 
     </div>
 
-</body>
-</html>
+@endsection

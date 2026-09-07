@@ -8,12 +8,17 @@ use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    public function index()
-    {
-        $blogs = Blog::latest()->get();
 
-        return view('admin.blogs.index', compact('blogs'));
-    }
+public function dashboard()
+{
+    return view('admin.dashboard');
+}
+public function index()
+{
+    $blogs = Blog::latest()->get();
+
+    return view('admin.blogs.index', compact('blogs'));
+}
 
 public function create()
 {
