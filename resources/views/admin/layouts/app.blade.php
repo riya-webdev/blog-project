@@ -55,6 +55,10 @@
         <span>Dashboard</span>
     </a>
 
+    <a href="{{ route('admin.home') }}">
+    <span class="sidebar-icon">🏠</span>
+    <span>Home Page</span>
+</a>
     <a href="{{ route('blogs.index') }}">
         <span class="sidebar-icon">📝</span>
         <span>Blogs</span>
